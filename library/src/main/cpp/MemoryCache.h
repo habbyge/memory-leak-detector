@@ -23,25 +23,30 @@
 using namespace std;
 
 struct AllocNode {
-    uint32_t         size;
-    uintptr_t        addr;
-    uintptr_t        trace[MAX_TRACE_DEPTH];
-    AllocNode       *next;
+  uint32_t size;
+  uintptr_t addr;
+  uintptr_t trace[MAX_TRACE_DEPTH];
+  AllocNode* next;
 };
 
 class MemoryCache : public Cache {
 public:
-    MemoryCache(const char *space);
-    ~MemoryCache();
+  MemoryCache(const char* space);
+
+  ~MemoryCache();
+
 public:
-    void reset();
-    void insert(uintptr_t address, size_t size, Backtrace *backtrace);
-    void remove(uintptr_t address);
-    void print();
+  void reset();
+
+  void insert(uintptr_t address, size_t size, Backtrace* backtrace);
+  void remove(uintptr_t address);
+
+  void print();
+
 private:
-    pthread_mutex_t       alloc_mutex;
-    AllocNode            *alloc_table[ALLOC_INDEX_SIZE];
-    AllocPool<AllocNode> *alloc_cache;
+  pthread_mutex_t alloc_mutex;
+  AllocNode* alloc_table[ALLOC_INDEX_SIZE];
+  AllocPool<AllocNode>* alloc_cache;
 };
 
 #endif //MEMORF_CACHE_H

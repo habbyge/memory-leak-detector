@@ -38,21 +38,29 @@ extern "C" {
 #define ALLOC_CACHE_SIZE 1 << 15
 
 typedef struct {
-    uint32_t          depth;
-    uintptr_t         trace[MAX_TRACE_DEPTH];
+  uint32_t depth;
+  uintptr_t trace[MAX_TRACE_DEPTH];
 } Backtrace;
 
 class Cache {
 public:
-    Cache(const char *space) {this->mSpace = space;}
-    virtual ~Cache() {}
+  Cache(const char* space) {
+    this->mSpace = space;
+  }
+
+  virtual ~Cache() {}
+
 public:
-    virtual void reset() = 0;
-    virtual void insert(uintptr_t address, size_t size, Backtrace *backtrace) = 0;
-    virtual void remove(uintptr_t address) = 0;
-    virtual void print() = 0;
+  virtual void reset() = 0;
+
+  virtual void insert(uintptr_t address, size_t size, Backtrace* backtrace) = 0;
+
+  virtual void remove(uintptr_t address) = 0;
+
+  virtual void print() = 0;
+
 protected:
-    const char *mSpace;
+  const char* mSpace;
 };
 
 #ifdef __cplusplus
