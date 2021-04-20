@@ -31,7 +31,7 @@
 extern "C" {
 #endif
 
-int xdl_lzma_decompress(uint8_t *src, size_t src_size, uint8_t **dst, size_t *dst_size);
+int xdl_lzma_decompress(uint8_t* src, size_t src_size, uint8_t** dst, size_t* dst_size);
 
 #ifdef __cplusplus
 }

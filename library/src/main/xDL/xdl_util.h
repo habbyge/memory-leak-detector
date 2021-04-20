@@ -31,11 +31,9 @@
 extern "C" {
 #endif
 
-bool xdl_util_starts_with(const char *str, const char *start);
+bool xdl_util_starts_with(const char* str, const char* start);
 bool xdl_util_ends_with(const char* str, const char* ending);
-
-size_t xdl_util_trim_ending(char *start);
-
+size_t xdl_util_trim_ending(char* start);
 int xdl_util_get_api_level(void);
 
 #ifdef __cplusplus

@@ -42,13 +42,11 @@ extern "C" {
 //
 // Enhanced dlfcn APIs
 //
-void *xdl_open(const char *filename);
-void xdl_close(void *handle);
-
-void *xdl_sym(void *handle, const char *symbol);
-void *xdl_dsym(void *handle, const char *symbol);
-
-int xdl_addr(void *addr, Dl_info *info, char *tmpbuf, size_t tmpbuf_len);
+void* xdl_open(const char* filename);
+void xdl_close(void* handle);
+void* xdl_sym(void* handle, const char* symbol);
+void* xdl_dsym(void* handle, const char* symbol);
+int xdl_addr(void* addr, Dl_info* info, char* tmpbuf, size_t tmpbuf_len);
 
 //
 // Enhanced dl_iterate_phdr()
@@ -57,7 +55,7 @@ int xdl_addr(void *addr, Dl_info *info, char *tmpbuf, size_t tmpbuf_len);
 #define XDL_WITH_LINKER   0x01
 #define XDL_FULL_PATHNAME 0x02
 
-int xdl_iterate_phdr(int (*callback)(struct dl_phdr_info *, size_t, void *), void *data, int flags);
+int xdl_iterate_phdr(int (*callback)(struct dl_phdr_info*, size_t, void*), void* data, int flags);
 
 #ifdef __cplusplus
 }
