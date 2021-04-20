@@ -510,8 +510,11 @@ static uint32_t* FastAllocateTrampoline() {
 
 //-------------------------------------------------------------------------
 
-A64_JNIEXPORT void* A64HookFunctionV(void* const symbol, void* const replace,
-                                     void* const rwx, const uintptr_t rwx_size) {
+A64_JNIEXPORT void* A64HookFunctionV(void* const symbol,
+                                     void* const replace,
+                                     void* const rwx,
+                                     const uintptr_t rwx_size) {
+
   static constexpr uint_fast64_t mask = 0x03ffffffu; // 0b00000011111111111111111111111111
 
   uint32_t* trampoline = static_cast<uint32_t*>(rwx), * original = static_cast<uint32_t*>(symbol);
