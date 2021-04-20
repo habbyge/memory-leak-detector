@@ -266,7 +266,8 @@ enum ele7en_status registerInlineHook(uint32_t target_addr, uint32_t new_addr, u
 
   item->trampoline_instructions = mmap(NULL,
                                        PAGE_SIZE,
-                                       PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE,
+                                       PROT_READ | PROT_WRITE | PROT_EXEC,
+                                       MAP_ANONYMOUS | MAP_PRIVATE,
                                        0,
                                        0);
 

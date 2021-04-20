@@ -279,8 +279,10 @@ static bool __fix_loadlit(instruction inpp, instruction outpp, context* ctxp) {
   } //if
 
   intptr_t current_idx = ctxp->get_and_set_current_index(*inpp, *outpp);
-  int64_t absolute_addr =
-      reinterpret_cast<int64_t>(*inpp) + ((static_cast<int32_t>(ins << msb) >> (msb + lsb - 2u)) & ~3u);
+
+  int64_t absolute_addr =  reinterpret_cast<int64_t>(*inpp) +
+      ((static_cast<int32_t>(ins << msb) >> (msb + lsb - 2u)) & ~3u);
+
   int64_t new_pc_offset = static_cast<int64_t>(absolute_addr - reinterpret_cast<int64_t>(*outpp)) >> 2; // shifted
   bool special_fix_type = ctxp->is_in_fixing_range(absolute_addr);
   // special_fix_type may encounter issue when there are mixed data and code

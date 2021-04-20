@@ -22,39 +22,41 @@
 
 using namespace std;
 
-template <class T> class AllocPool {
+template<class T>
+class AllocPool {
 public:
-    AllocPool(size_t count) {
-        masks = count - 1;
-        cache = (T * ) malloc(count * sizeof(T  ));
-        index = (T **) malloc(count * sizeof(T *));
-    }
+  AllocPool(size_t count) {
+    masks = count - 1;
+    cache = (T*) malloc(count * sizeof(T));
+    index = (T**) malloc(count * sizeof(T*));
+  }
 
-    ~AllocPool() {
-        delete cache;
-        delete index;
-    }
+  ~AllocPool() {
+    delete cache;
+    delete index;
+  }
 
-    void reset() {
-        tail.store(0);
-        head.store(0);
-    }
+  void reset() {
+    tail.store(0);
+    head.store(0);
+  }
 
-    T* apply() {
-        uint i = tail.fetch_add(1, memory_order_acquire);
-        return (i <= masks) ? cache + i : index[i & masks];
-    }
+  T* apply() {
+    uint i = tail.fetch_add(1, memory_order_acquire);
+    return (i <= masks) ? cache + i : index[i & masks];
+  }
 
-    void recycle(T *t) {
-        uint i = head.fetch_add(1, memory_order_acquire);
-        index[i & masks] = t;
-    }
+  void recycle(T* t) {
+    uint i = head.fetch_add(1, memory_order_acquire);
+    index[i & masks] = t;
+  }
+
 private:
-    uint              masks;
-    std::atomic<uint> tail;
-    std::atomic<uint> head;
-    T *               cache;
-    T **              index;
+  uint masks;
+  std::atomic<uint> tail;
+  std::atomic<uint> head;
+  T* cache;
+  T** index;
 };
 
 #endif //ALLOC_POOL_H

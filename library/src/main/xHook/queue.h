@@ -34,7 +34,7 @@
 #define QUEUE_H
 
 /* #include <sys/cdefs.h> */
-#define __containerof(ptr, type, field) ((type *)((char *)(ptr) - ((char *)&((type *)0)->field)))
+#define __containerof(ptr, type, field) ((type *)((char*) (ptr) - ((char*) &((type*) 0)->field)))
 
 /*
  * This file defines four types of data structures: singly-linked lists,

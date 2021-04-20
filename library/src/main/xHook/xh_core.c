@@ -99,9 +99,11 @@ static void xh_core_sigsegv_handler(int sig) {
 static int xh_core_add_sigsegv_handler() {
   struct sigaction act;
 
-  if (!xh_core_sigsegv_enable) return 0;
+  if (!xh_core_sigsegv_enable)
+    return 0;
+  if (0 != sigemptyset(&act.sa_mask))
+    return (0 == errno ? XH_ERRNO_UNKNOWN : errno);
 
-  if (0 != sigemptyset(&act.sa_mask)) return (0 == errno ? XH_ERRNO_UNKNOWN : errno);
   act.sa_handler = xh_core_sigsegv_handler;
 
   if (0 != sigaction(SIGSEGV, &act, &xh_core_sigsegv_act_old))
@@ -111,7 +113,8 @@ static int xh_core_add_sigsegv_handler() {
 }
 
 static void xh_core_del_sigsegv_handler() {
-  if (!xh_core_sigsegv_enable) return;
+  if (!xh_core_sigsegv_enable)
+    return;
 
   sigaction(SIGSEGV, &xh_core_sigsegv_act_old, NULL);
 }
@@ -158,7 +161,7 @@ int xh_core_register(const char* pathname_regex_str,
     return XH_ERRNO_NOMEM;
   }
 #if XH_CORE_DEBUG
-  if(NULL == (hi->pathname_regex_str = strdup(pathname_regex_str))) {
+  if (NULL == (hi->pathname_regex_str = strdup(pathname_regex_str))) {
     free(hi->symbol);
     free(hi);
     return XH_ERRNO_NOMEM;
@@ -179,16 +182,20 @@ int xh_core_ignore(const char* pathname_regex_str, const char* symbol) {
   xh_core_ignore_info_t* ii;
   regex_t regex;
 
-  if (NULL == pathname_regex_str) return XH_ERRNO_INVAL;
+  if (NULL == pathname_regex_str)
+    return XH_ERRNO_INVAL;
 
   if (xh_core_inited) {
     XH_LOG_ERROR("do not ignore hook after refresh(): %s, %s", pathname_regex_str, symbol ? symbol : "ALL");
     return XH_ERRNO_INVAL;
   }
 
-  if (0 != regcomp(&regex, pathname_regex_str, REG_NOSUB)) return XH_ERRNO_INVAL;
+  if (0 != regcomp(&regex, pathname_regex_str, REG_NOSUB))
+    return XH_ERRNO_INVAL;
 
-  if (NULL == (ii = malloc(sizeof(xh_core_ignore_info_t)))) return XH_ERRNO_NOMEM;
+  if (NULL == (ii = malloc(sizeof(xh_core_ignore_info_t))))
+    return XH_ERRNO_NOMEM;
+
   if (NULL != symbol) {
     if (NULL == (ii->symbol = strdup(symbol))) {
       free(ii);
@@ -198,11 +205,10 @@ int xh_core_ignore(const char* pathname_regex_str, const char* symbol) {
     ii->symbol = NULL; //ignore all symbols
   }
 #if XH_CORE_DEBUG
-  if(NULL == (ii->pathname_regex_str = strdup(pathname_regex_str)))
-  {
-      free(ii->symbol);
-      free(ii);
-      return XH_ERRNO_NOMEM;
+  if (NULL == (ii->pathname_regex_str = strdup(pathname_regex_str))) {
+    free(ii->symbol);
+    free(ii);
+    return XH_ERRNO_NOMEM;
   }
 #endif
   ii->pathname_regex = regex;
@@ -240,18 +246,15 @@ static void xh_core_hook_impl(xh_core_map_info_t* mi) {
   xh_core_hook_info_t* hi;
   xh_core_ignore_info_t* ii;
   int ignore;
-  TAILQ_FOREACH(hi, &xh_core_hook_info, link) //find hook info
-  {
+  TAILQ_FOREACH(hi, &xh_core_hook_info, link) { // find hook info
     if (0 == regexec(&(hi->pathname_regex), mi->pathname, 0, NULL, 0)) {
       ignore = 0;
-      TAILQ_FOREACH(ii, &xh_core_ignore_info, link) //find ignore info
-      {
+      TAILQ_FOREACH(ii, &xh_core_ignore_info, link) { // find ignore info
         if (0 == regexec(&(ii->pathname_regex), mi->pathname, 0, NULL, 0)) {
           if (NULL == ii->symbol) //ignore all symbols
             return;
 
-          if (0 == strcmp(ii->symbol, hi->symbol)) //ignore the offset symbol
-          {
+          if (0 == strcmp(ii->symbol, hi->symbol)) { // ignore the offset symbol
             ignore = 1;
             break;
           }
@@ -451,7 +454,6 @@ static void* xh_core_refresh_thread_func(void* arg) {
     xh_core_refresh_impl();
     pthread_mutex_unlock(&xh_core_refresh_mutex);
   }
-
   return NULL;
 }
 

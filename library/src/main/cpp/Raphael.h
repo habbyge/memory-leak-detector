@@ -28,15 +28,20 @@
 
 class Raphael {
 public:
-    void start(JNIEnv *env, jobject obj, jint configs, jstring space, jstring regex);
-    void stop(JNIEnv *env, jobject obj);
-    void print(JNIEnv *env, jobject obj);
+  void start(JNIEnv* env, jobject obj, jint configs, jstring space, jstring regex);
+
+  void stop(JNIEnv* env, jobject obj);
+
+  void print(JNIEnv* env, jobject obj);
+
 private:
-    void clean_cache(JNIEnv *env);
-    void dump_system(JNIEnv *env);
+  void clean_cache(JNIEnv* env);
+
+  void dump_system(JNIEnv* env);
+
 private:
-    Cache      *mCache;
-    const char *mSpace;
+  Cache* mCache;
+  const char* mSpace;
 };
 
 #endif //RAPHAEL_H

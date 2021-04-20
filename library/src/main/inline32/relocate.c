@@ -268,8 +268,11 @@ static int relocateInstructionInThumb16(uint32_t pc, uint16_t instruction, uint1
   return offset;
 }
 
-static int relocateInstructionInThumb32(uint32_t pc, uint16_t high_instruction, uint16_t low_instruction,
+static int relocateInstructionInThumb32(uint32_t pc,
+                                        uint16_t high_instruction,
+                                        uint16_t low_instruction,
                                         uint16_t* trampoline_instructions) {
+
   uint32_t instruction;
   int type;
   int idx;
@@ -420,9 +423,14 @@ static int relocateInstructionInThumb32(uint32_t pc, uint16_t high_instruction, 
   return offset;
 }
 
-static void relocateInstructionInThumb(uint32_t target_addr, uint16_t* orig_instructions, int length,
-                                       uint16_t* trampoline_instructions, int* orig_boundaries, int* trampoline_boundaries,
+static void relocateInstructionInThumb(uint32_t target_addr,
+                                       uint16_t* orig_instructions,
+                                       int length,
+                                       uint16_t* trampoline_instructions,
+                                       int* orig_boundaries,
+                                       int* trampoline_boundaries,
                                        int* count) {
+
   int orig_pos;
   int trampoline_pos;
   uint32_t pc;
@@ -442,7 +450,10 @@ static void relocateInstructionInThumb(uint32_t target_addr, uint16_t* orig_inst
       if (orig_pos + 2 > length / sizeof(uint16_t)) {
         break;
       }
-      offset = relocateInstructionInThumb32(pc, orig_instructions[orig_pos], orig_instructions[orig_pos + 1],
+
+      offset = relocateInstructionInThumb32(pc,
+                                            orig_instructions[orig_pos],
+                                            orig_instructions[orig_pos + 1],
                                             &trampoline_instructions[trampoline_pos]);
       pc += sizeof(uint32_t);
       trampoline_pos += offset;
@@ -467,9 +478,14 @@ static void relocateInstructionInThumb(uint32_t target_addr, uint16_t* orig_inst
   trampoline_instructions[trampoline_pos + 3] = lr >> 16;
 }
 
-static void
-relocateInstructionInArm(uint32_t target_addr, uint32_t* orig_instructions, int length, uint32_t* trampoline_instructions,
-                         int* orig_boundaries, int* trampoline_boundaries, int* count) {
+static void relocateInstructionInArm(uint32_t target_addr,
+                                     uint32_t* orig_instructions,
+                                     int length,
+                                     uint32_t* trampoline_instructions,
+                                     int* orig_boundaries,
+                                     int* trampoline_boundaries,
+                                     int* count) {
+
   uint32_t pc;
   uint32_t lr;
   int orig_pos;
@@ -577,13 +593,29 @@ relocateInstructionInArm(uint32_t target_addr, uint32_t* orig_instructions, int 
   trampoline_instructions[trampoline_pos++] = lr;
 }
 
-void relocateInstruction(uint32_t target_addr, void* orig_instructions, int length, void* trampoline_instructions,
-                         int* orig_boundaries, int* trampoline_boundaries, int* count) {
+void relocateInstruction(uint32_t target_addr,
+                         void* orig_instructions,
+                         int length,
+                         void* trampoline_instructions,
+                         int* orig_boundaries,
+                         int* trampoline_boundaries,
+                         int* count) {
+
   if (target_addr & 1 == 1) {
-    relocateInstructionInThumb(target_addr - 1, (uint16_t*) orig_instructions, length, (uint16_t*) trampoline_instructions,
-                               orig_boundaries, trampoline_boundaries, count);
+    relocateInstructionInThumb(target_addr - 1,
+                               (uint16_t*) orig_instructions,
+                               length,
+                               (uint16_t*) trampoline_instructions,
+                               orig_boundaries,
+                               trampoline_boundaries,
+                               count);
   } else {
-    relocateInstructionInArm(target_addr, (uint32_t*) orig_instructions, length, (uint32_t*) trampoline_instructions,
-                             orig_boundaries, trampoline_boundaries, count);
+    relocateInstructionInArm(target_addr,
+                             (uint32_t*) orig_instructions,
+                             length,
+                             (uint32_t*) trampoline_instructions,
+                             orig_boundaries,
+                             trampoline_boundaries,
+                             count);
   }
 }

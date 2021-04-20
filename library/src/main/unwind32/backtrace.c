@@ -30,11 +30,10 @@
 #include "map_info.h"
 #include "ptrace.h"
 
-ssize_t libudf_unwind_backtrace(backtrace_frame_t* backtrace, size_t ignore_depth, size_t max_depth) 
-{
-    ssize_t frames = -1;
-    map_info_t* milist = acquire_my_map_info_list();
-    frames = unwind_backtrace_signal_arch_selfnogcc(milist, backtrace, ignore_depth, max_depth);
-    release_my_map_info_list(milist);
-    return frames;
+ssize_t libudf_unwind_backtrace(backtrace_frame_t* backtrace, size_t ignore_depth, size_t max_depth) {
+  ssize_t frames = -1;
+  map_info_t* milist = acquire_my_map_info_list();
+  frames = unwind_backtrace_signal_arch_selfnogcc(milist, backtrace, ignore_depth, max_depth);
+  release_my_map_info_list(milist);
+  return frames;
 }

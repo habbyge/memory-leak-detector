@@ -30,29 +30,38 @@
 #include <string>
 
 struct MapEntry {
-    MapEntry(uintptr_t start, uintptr_t end, uintptr_t offset, const char* name, size_t name_len)
-            : start(start), end(end), offset(offset), name(name, name_len) {}
-    explicit MapEntry(uintptr_t pc) : start(pc), end(pc) {}
-    uintptr_t start;
-    uintptr_t end;
-    uintptr_t offset;
-    uintptr_t load_base;
-    bool load_base_read = false;
-    std::string name;
-};
-// Ordering comparator that returns equivalence for overlapping entries
-struct compare_entries {
-    bool operator()(const MapEntry* a, const MapEntry* b) const { return a->end <= b->start; }
-};
-class MapData {
-public:
-    MapData() = default;
-    ~MapData();
-    const MapEntry* find(uintptr_t pc, uintptr_t* rel_pc = nullptr);
-private:
-    bool ReadMaps();
-    std::set<MapEntry*, compare_entries> entries_;
+  MapEntry(uintptr_t start, uintptr_t end, uintptr_t offset, const char* name, size_t name_len)
+      : start(start), end(end), offset(offset), name(name, name_len) {}
+
+  explicit MapEntry(uintptr_t pc) : start(pc), end(pc) {}
+
+  uintptr_t start;
+  uintptr_t end;
+  uintptr_t offset;
+  uintptr_t load_base;
+  bool load_base_read = false;
+  std::string name;
 };
 
-MapEntry *parse_line(char *);
+// Ordering comparator that returns equivalence for overlapping entries
+struct compare_entries {
+  bool operator()(const MapEntry* a, const MapEntry* b) const { return a->end <= b->start; }
+};
+
+class MapData {
+public:
+  MapData() = default;
+
+  ~MapData();
+
+  const MapEntry* find(uintptr_t pc, uintptr_t* rel_pc = nullptr);
+
+private:
+  bool ReadMaps();
+
+  std::set<MapEntry*, compare_entries> entries_;
+};
+
+MapEntry* parse_line(char*);
+
 void read_loadbase(MapEntry* entry);

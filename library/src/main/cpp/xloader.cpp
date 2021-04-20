@@ -19,60 +19,63 @@
 
 #include "Logger.h"
 #include "Raphael.h"
+
 //**************************************************************************************************
 Raphael* sRaphael = new Raphael();
 
-void start(JNIEnv *env, jobject obj, jint configs, jstring space, jstring regex) {
-    sRaphael->start(env, obj, configs, space, regex);
+void start(JNIEnv* env, jobject obj, jint configs, jstring space, jstring regex) {
+  sRaphael->start(env, obj, configs, space, regex);
 }
 
-void stop(JNIEnv *env, jobject obj) {
-    sRaphael->stop(env, obj);
+void stop(JNIEnv* env, jobject obj) {
+  sRaphael->stop(env, obj);
 }
 
-void print(JNIEnv *env, jobject obj) {
-    sRaphael->print(env, obj);
+void print(JNIEnv* env, jobject obj) {
+  sRaphael->print(env, obj);
 }
 
 static const JNINativeMethod sMethods[] = {
-        {
-                "nStart",
-                "(ILjava/lang/String;Ljava/lang/String;)V",
-                (void *) start
-        }, {
-                "nStop",
-                "()V",
-                (void *) stop
-        }, {
-                "nPrint",
-                "()V",
-                (void *) print
-        }
+    {
+        "nStart",
+        "(ILjava/lang/String;Ljava/lang/String;)V",
+        (void*) start
+    },
+    {
+        "nStop",
+        "()V",
+        (void*) stop
+    },
+    {
+        "nPrint",
+        "()V",
+        (void*) print
+    }
 };
 
-static int registerNativeImpl(JNIEnv *env) {
-    jclass clazz = env->FindClass("com/bytedance/raphael/Raphael");
-    if (clazz == NULL) {
-        return JNI_FALSE;
-    }
+static int registerNativeImpl(JNIEnv* env) {
+  jclass clazz = env->FindClass("com/bytedance/raphael/Raphael");
+  if (clazz == NULL) {
+    return JNI_FALSE;
+  }
 
-    if (env->RegisterNatives(clazz, sMethods, sizeof(sMethods) / sizeof(sMethods[0])) < 0) {
-        return JNI_FALSE;
-    } else {
-        return JNI_TRUE;
-    }
+  if (env->RegisterNatives(clazz, sMethods, sizeof(sMethods) / sizeof(sMethods[0])) < 0) {
+    return JNI_FALSE;
+  } else {
+    return JNI_TRUE;
+  }
 }
 
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *res) {
-    JNIEnv *env = NULL;
-    if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
-        return -1;
-    }
+JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* res) {
+  JNIEnv* env = NULL;
+  if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) != JNI_OK) {
+    return -1;
+  }
 
-    if (registerNativeImpl(env) == 0) {
-        return -1;
-    } else {
-        return JNI_VERSION_1_6;
-    }
+  if (registerNativeImpl(env) == 0) {
+    return -1;
+  } else {
+    return JNI_VERSION_1_6;
+  }
 }
 //**************************************************************************************************
